@@ -1,18 +1,12 @@
 'use client';
 
 import { useRef, useEffect } from 'react';
-import type { Message } from '@/lib/storage';
 import MessageBubble from './MessageBubble';
 import Loader from './Loader';
 import EmptyState from './EmptyState';
 
-interface ChatWindowProps {
-  messages: Message[];
-  isLoading: boolean;
-}
-
-export default function ChatWindow({ messages, isLoading }: ChatWindowProps) {
-  const bottomRef = useRef<HTMLDivElement>(null);
+export default function ChatWindow({ messages, isLoading }) {
+  const bottomRef = useRef(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });

@@ -1,11 +1,4 @@
-'use client';
-
-interface ErrorBannerProps {
-  message: string | null;
-  onDismiss?: () => void;
-}
-
-export default function ErrorBanner({ message, onDismiss }: ErrorBannerProps) {
+export default function ErrorBanner({ message, onDismiss }) {
   if (!message) return null;
 
   return (
