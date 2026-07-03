@@ -1,6 +1,11 @@
 import { formatTime } from '@/lib/helpers';
+import type { Message } from '@/lib/storage';
 
-export default function MessageBubble({ message }) {
+interface MessageBubbleProps {
+  message: Message;
+}
+
+export default function MessageBubble({ message }: MessageBubbleProps) {
   const isUser = message.role === 'user';
 
   return (

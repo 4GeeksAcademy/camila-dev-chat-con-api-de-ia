@@ -1,10 +1,15 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, type KeyboardEvent } from 'react';
 
-export default function ChatInput({ onSend, disabled }) {
+interface ChatInputProps {
+  onSend: (content: string) => void;
+  disabled: boolean;
+}
+
+export default function ChatInput({ onSend, disabled }: ChatInputProps) {
   const [text, setText] = useState('');
-  const textareaRef = useRef(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     const textarea = textareaRef.current;
@@ -14,14 +19,14 @@ export default function ChatInput({ onSend, disabled }) {
     }
   }, [text]);
 
-  function handleSubmit() {
+  function handleSubmit(): void {
     const trimmed = text.trim();
     if (!trimmed || disabled) return;
     onSend(trimmed);
     setText('');
   }
 
-  function handleKeyDown(e) {
+  function handleKeyDown(e: KeyboardEvent<HTMLTextAreaElement>): void {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSubmit();
@@ -59,7 +64,7 @@ export default function ChatInput({ onSend, disabled }) {
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
-            d="M6 12L3.269 3.125A59.769 59.769 0 0121.485 12 59.768 59.768 0 013.27 20.875L5.999 12zm0 0h7.5"
+            d="M6 12L3.37 8.12a1 1 0 01.15-1.38l.67-.6a1 1 0 011.34.05L9 10.5V4a1 1 0 011-1h1a1 1 0 011 1v6.5l3.47-4.31a1 1 0 011.34-.05l.67.6a1 1 0 01.15 1.38L15 12l2.63 3.88a1 1 0 01-.15 1.38l-.67.6a1 1 0 01-1.34-.05L12 13.5V20a1 1 0 01-1 1h-1a1 1 0 01-1-1v-6.5l-3.47 4.31a1 1 0 01-1.34.05l-.67-.6a1 1 0 01-.15-1.38L6 12z"
           />
         </svg>
       </button>

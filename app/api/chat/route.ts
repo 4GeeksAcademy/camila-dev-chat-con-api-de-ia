@@ -1,4 +1,6 @@
-export async function POST(request) {
+import { NextRequest } from 'next/server';
+
+export async function POST(request: NextRequest) {
   const startTime = Date.now();
 
   try {
@@ -31,7 +33,7 @@ export async function POST(request) {
         },
         body: JSON.stringify({
           model: GROQ_MODEL,
-          messages: messages.map((msg) => ({
+          messages: messages.map((msg: { role: string; content: string }) => ({
             role: msg.role,
             content: msg.content,
           })),
@@ -92,25 +94,32 @@ export async function POST(request) {
       model,
       response_time: responseTime,
     });
-  } catch (error) {
+  } catch (error: unknown) {
     const responseTime = Date.now() - startTime;
 
-    if (error.name === 'AbortError' || error.type === 'aborted') {
-      return Response.json(
-        { error: 'Request timed out. Please try again.' },
-        { status: 504 }
-      );
-    }
+    if (error instanceof Error) {
+      if (error.name === 'AbortError' || (error as any).type === 'aborted') {
+        return Response.json(
+          { error: 'Request timed out. Please try again.' },
+          { status: 504 }
+        );
+      }
 
-    if (error.message?.includes('fetch') || error.message?.includes('ENOTFOUND')) {
+      if (error.message?.includes('fetch') || error.message?.includes('ENOTFOUND')) {
+        return Response.json(
+          { error: 'Network error. Please check your internet connection.' },
+          { status: 503 }
+        );
+      }
+
       return Response.json(
-        { error: 'Network error. Please check your internet connection.' },
-        { status: 503 }
+        { error: error.message || 'Internal server error' },
+        { status: 500 }
       );
     }
 
     return Response.json(
-      { error: error.message || 'Internal server error' },
+      { error: 'Internal server error' },
       { status: 500 }
     );
   }

@@ -1,9 +1,18 @@
+import type { SessionMetrics } from './metrics';
+
+export interface Message {
+  id: string;
+  role: 'user' | 'assistant';
+  content: string;
+  timestamp: string;
+}
+
 const STORAGE_KEYS = {
   messages: 'camila_chat_messages',
   metrics: 'camila_chat_metrics',
 };
 
-export function loadMessages() {
+export function loadMessages(): Message[] {
   try {
     const data = localStorage.getItem(STORAGE_KEYS.messages);
     return data ? JSON.parse(data) : [];
@@ -12,7 +21,7 @@ export function loadMessages() {
   }
 }
 
-export function saveMessages(messages) {
+export function saveMessages(messages: Message[]): void {
   try {
     localStorage.setItem(STORAGE_KEYS.messages, JSON.stringify(messages));
   } catch {
@@ -20,7 +29,7 @@ export function saveMessages(messages) {
   }
 }
 
-export function loadMetrics() {
+export function loadMetrics(): SessionMetrics {
   try {
     const data = localStorage.getItem(STORAGE_KEYS.metrics);
     return data
@@ -45,7 +54,7 @@ export function loadMetrics() {
   }
 }
 
-export function saveMetrics(metrics) {
+export function saveMetrics(metrics: SessionMetrics): void {
   try {
     localStorage.setItem(STORAGE_KEYS.metrics, JSON.stringify(metrics));
   } catch {
@@ -53,7 +62,7 @@ export function saveMetrics(metrics) {
   }
 }
 
-export function clearStorage() {
+export function clearStorage(): void {
   try {
     localStorage.removeItem(STORAGE_KEYS.messages);
     localStorage.removeItem(STORAGE_KEYS.metrics);

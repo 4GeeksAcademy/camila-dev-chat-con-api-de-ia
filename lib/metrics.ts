@@ -1,4 +1,24 @@
-export function accumulateMetrics(prev, current) {
+export interface SessionMetrics {
+  prompt_tokens: number;
+  completion_tokens: number;
+  total_tokens: number;
+  response_times: number[];
+  model: string;
+  last_response_time: number;
+}
+
+export interface CurrentMetrics {
+  prompt_tokens?: number;
+  completion_tokens?: number;
+  total_tokens?: number;
+  model?: string;
+  response_time?: number;
+}
+
+export function accumulateMetrics(
+  prev: SessionMetrics,
+  current: CurrentMetrics | null | undefined
+): SessionMetrics {
   if (!current) return prev;
 
   const responseTimes = [...(prev.response_times || []), current.response_time || 0];
