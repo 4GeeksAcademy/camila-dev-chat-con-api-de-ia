@@ -1,3 +1,14 @@
+const GROQ_CHAT_COMPLETIONS_URL = 'https://api.groq.com/openai/v1/chat/completions';
+const DEFAULT_GROQ_MODEL = 'llama-3.3-70b-versatile';
+const GROQ_JSON_CONTENT_TYPE = 'application/json';
+
+function mapMessagesToGroqFormat(messages) {
+  return messages.map((message) => ({
+    role: message.role,
+    content: message.content,
+  }));
+}
+
 export async function POST(request) {
   const startTime = Date.now();
 
@@ -11,8 +22,8 @@ export async function POST(request) {
       );
     }
 
-    const GROQ_API_KEY = process.env.GROQ_API_KEY;
-    const GROQ_MODEL = process.env.GROQ_MODEL || 'llama3-8b-8192';
+    const GROQ_API_KEY = process.env.NEXT_PUBLIC_GROQ_API_KEY;
+    const GROQ_MODEL = process.env.GROQ_MODEL || DEFAULT_GROQ_MODEL;
 
     if (!GROQ_API_KEY) {
       return Response.json(
@@ -21,24 +32,22 @@ export async function POST(request) {
       );
     }
 
-    const groqResponse = await fetch(
-      'https://api.groq.com/openai/v1/chat/completions',
-      {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${GROQ_API_KEY}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: GROQ_MODEL,
-          messages: messages.map((msg) => ({
-            role: msg.role,
-            content: msg.content,
-          })),
-          stream: false,
-        }),
-      }
-    );
+    const requestHeaders = {
+      Authorization: `Bearer ${GROQ_API_KEY}`,
+      'Content-Type': GROQ_JSON_CONTENT_TYPE,
+    };
+
+    const requestBody = {
+      model: GROQ_MODEL,
+      messages: mapMessagesToGroqFormat(messages),
+      stream: false,
+    };
+
+    const groqResponse = await fetch(GROQ_CHAT_COMPLETIONS_URL, {
+      method: 'POST',
+      headers: requestHeaders,
+      body: JSON.stringify(requestBody),
+    });
 
     const responseTime = Date.now() - startTime;
 
