@@ -1,9 +1,8 @@
 export default function EmptyState() {
   const hints = [
-    'Escribe un script en Python',
-    'Explica conceptos de React',
-    'Optimiza esta consulta SQL',
-    'Depura este error',
+    '¿Qué es Levante?',
+    '¿Qué es la masa madre?',
+    '¿Cuánto cuesta un pan de masa madre?',
   ];
 
   return (
@@ -24,11 +23,10 @@ export default function EmptyState() {
         </svg>
       </div>
       <h2 className="text-lg font-semibold text-on-surface mb-2">
-        ¿En qué puedo ayudarte hoy?
+        Soy un asistente IA impulsado por Llama 3 en Groq. Pregúntame lo que necesites sobre Levante.
       </h2>
       <p className="text-sm text-on-surface-variant max-w-md leading-relaxed">
-        Soy un asistente IA impulsado por Llama 3 en Groq. Pregúntame lo que necesites sobre
-        programación, análisis, o cualquier tema técnico.
+        Estas son algunas preguntas sugeridas:
       </p>
       <div className="mt-6 flex flex-wrap gap-2 justify-center">
         {hints.map((hint) => (

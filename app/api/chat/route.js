@@ -1,28 +1,51 @@
+import { getKnowledge } from '@/lib/knowledge';
+
 const GROQ_CHAT_COMPLETIONS_URL = 'https://api.groq.com/openai/v1/chat/completions';
 const DEFAULT_GROQ_MODEL = 'llama-3.3-70b-versatile';
 const GROQ_JSON_CONTENT_TYPE = 'application/json';
 
-function mapMessagesToGroqFormat(messages) {
-  return messages.map((message) => ({
-    role: message.role,
-    content: message.content,
-  }));
+function buildSystemPrompt(knowledge) {
+  return [
+    'Eres el asistente oficial del emprendimiento "Levante".',
+    'Debes responder SOLO usando la informacion incluida en el conocimiento local provisto abajo.',
+    'Reglas estrictas de comportamiento:',
+    '- Responde unicamente con informacion presente en el conocimiento de Levante.',
+    '- No inventes, no asumas, no completes huecos y no uses conocimiento externo bajo ninguna circunstancia.',
+    '- Si la respuesta no esta en el conocimiento, responde exactamente: "No tengo esa informacion en el conocimiento de Levante".',
+    '',
+    'Conocimiento de Levante:',
+    knowledge,
+  ].join('\n');
+}
+
+function sanitizeMessages(messages) {
+  return messages
+    .filter((message) => typeof message?.content === 'string' && typeof message?.role === 'string')
+    .map((message) => ({
+      role: message.role,
+      content: message.content,
+    }));
 }
 
 export async function POST(request) {
   const startTime = Date.now();
 
   try {
-    const { messages } = await request.json();
+    const body = await request.json();
+    const { message, messages } = body || {};
+    const fallbackMessage = Array.isArray(messages)
+      ? messages.filter((msg) => msg?.role === 'user' && typeof msg?.content === 'string').at(-1)?.content
+      : null;
+    const userMessage = typeof message === 'string' ? message : fallbackMessage;
 
-    if (!messages || !Array.isArray(messages) || messages.length === 0) {
+    if (!userMessage) {
       return Response.json(
-        { error: 'Messages array is required' },
+        { error: 'Message is required' },
         { status: 400 }
       );
     }
 
-    const GROQ_API_KEY = process.env.NEXT_PUBLIC_GROQ_API_KEY;
+    const GROQ_API_KEY = process.env.GROQ_API_KEY || process.env.NEXT_PUBLIC_GROQ_API_KEY;
     const GROQ_MODEL = process.env.GROQ_MODEL || DEFAULT_GROQ_MODEL;
 
     if (!GROQ_API_KEY) {
@@ -32,6 +55,12 @@ export async function POST(request) {
       );
     }
 
+    const knowledge = getKnowledge();
+    const systemPrompt = buildSystemPrompt(knowledge);
+    const chatMessages = Array.isArray(messages)
+      ? sanitizeMessages(messages)
+      : [{ role: 'user', content: userMessage }];
+
     const requestHeaders = {
       Authorization: `Bearer ${GROQ_API_KEY}`,
       'Content-Type': GROQ_JSON_CONTENT_TYPE,
@@ -39,7 +68,7 @@ export async function POST(request) {
 
     const requestBody = {
       model: GROQ_MODEL,
-      messages: mapMessagesToGroqFormat(messages),
+      messages: [{ role: 'system', content: systemPrompt }, ...chatMessages],
       stream: false,
     };
 
