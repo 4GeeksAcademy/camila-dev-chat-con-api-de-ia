@@ -26,7 +26,7 @@ function MetricsContent({ metrics, mobile = false }) {
           Modelo activo
         </p>
         <p className="text-sm font-semibold text-primary truncate">
-          {metrics.model || 'No conectado'}
+          {metrics.model || 'llama-3.3-70b-versatile'}
         </p>
       </div>
 
