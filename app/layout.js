@@ -12,13 +12,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Asistente IA — Llama 3 · Groq",
+  title: "Levante | Respuestas Rápidas",
   description:
-    "Chat IA profesional impulsado por Llama 3 en Groq. Conversaciones inteligentes con métricas en tiempo real.",
+    "Resolvemos tus dudas al instante. Consultá acá sobre nuestros horarios, zonas de envío, stock diario y cómo conservar tus panes de masa madre.",
     openGraph: {
-      title: "Asistente IA — Llama 3 · Groq",
+      title: "Levante | Respuestas Rápidas",
       description:
-        "Chat IA profesional impulsado por Llama 3 en Groq. Conversaciones inteligentes con métricas en tiempo real."
+        "Resolvemos tus dudas al instante. Consultá acá sobre nuestros horarios, zonas de envío, stock diario y cómo conservar tus panes de masa madre."
       }
 };
 
