@@ -214,7 +214,11 @@ export default function AppShell() {
         </header>
 
         {/* Chat window */}
-        <ChatWindow messages={messages} isLoading={isLoading} />
+        <ChatWindow
+          messages={messages}
+          isLoading={isLoading}
+          onSuggestionSelect={handleSend}
+        />
 
         {/* Error banner */}
         {error && (

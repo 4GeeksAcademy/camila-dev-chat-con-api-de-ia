@@ -5,7 +5,7 @@ import MessageBubble from './MessageBubble';
 import Loader from './Loader';
 import EmptyState from './EmptyState';
 
-export default function ChatWindow({ messages, isLoading }) {
+export default function ChatWindow({ messages, isLoading, onSuggestionSelect }) {
   const bottomRef = useRef(null);
 
   useEffect(() => {
@@ -15,7 +15,7 @@ export default function ChatWindow({ messages, isLoading }) {
   if (messages.length === 0) {
     return (
       <div className="flex-1 overflow-y-auto chat-scrollbar px-4 py-6">
-        <EmptyState />
+        <EmptyState onSuggestionSelect={onSuggestionSelect} isLoading={isLoading} />
       </div>
     );
   }

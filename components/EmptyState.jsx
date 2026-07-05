@@ -1,9 +1,17 @@
-export default function EmptyState() {
+export default function EmptyState({ onSuggestionSelect, isLoading = false }) {
   const hints = [
     '¿Qué es Levante?',
     '¿Qué es la masa madre?',
     '¿Cuánto cuesta un pan de masa madre?',
   ];
+
+  const handleSuggestionClick = (hint) => {
+    if (!onSuggestionSelect || isLoading) {
+      return;
+    }
+
+    onSuggestionSelect(hint);
+  };
 
   return (
     <div className="flex flex-col items-center justify-center text-center py-16 px-6 animate-fadeIn">
@@ -30,12 +38,15 @@ export default function EmptyState() {
       </p>
       <div className="mt-6 flex flex-wrap gap-2 justify-center">
         {hints.map((hint) => (
-          <span
+          <button
             key={hint}
-            className="px-3 py-1.5 text-xs font-medium rounded-lg bg-surface-container-highest text-on-surface-variant border border-white/5"
+            type="button"
+            onClick={() => handleSuggestionClick(hint)}
+            disabled={isLoading}
+            className="px-3 py-1.5 text-xs font-medium rounded-lg bg-surface-container-highest text-on-surface-variant border border-white/5 transition-colors hover:bg-primary/10 hover:text-primary disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {hint}
-          </span>
+          </button>
         ))}
       </div>
     </div>
