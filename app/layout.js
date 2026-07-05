@@ -15,6 +15,11 @@ export const metadata = {
   title: "Asistente IA — Llama 3 · Groq",
   description:
     "Chat IA profesional impulsado por Llama 3 en Groq. Conversaciones inteligentes con métricas en tiempo real.",
+    openGraph: {
+      title: "Asistente IA — Llama 3 · Groq",
+      description:
+        "Chat IA profesional impulsado por Llama 3 en Groq. Conversaciones inteligentes con métricas en tiempo real."
+      }
 };
 
 export default function RootLayout({ children }) {
